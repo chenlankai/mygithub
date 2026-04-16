@@ -15,7 +15,18 @@ class MainActivity : AppCompatActivity() , OnFragmentInteractionListener{
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
         if (savedInstanceState == null){
-            supportFragmentManager.beginTransaction().replace(R.id.top_container, MyFragment()).commit()
+            supportFragmentManager.beginTransaction()//直接替换，也就是清空所有的
+                .replace(R.id.top_container, MyFragmentDemo1())
+                .commit()
+            supportFragmentManager.beginTransaction()// 替换并添加到返回栈（支持返回）
+                .replace(R.id.top_container, AnotherFragment())
+                .addToBackStack(null)
+                .commit()
+            supportFragmentManager.beginTransaction() //删除指定的fragment
+                .remove(MyFragmentDemo1())
+                .commit()
+            supportFragmentManager.popBackStack()  //弹出栈顶的fragment
+
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
