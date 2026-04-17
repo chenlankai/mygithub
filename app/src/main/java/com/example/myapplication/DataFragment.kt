@@ -51,7 +51,7 @@ class DataFragment : Fragment() {
 
         val adapter = TableAdapter(data, columnCount) { row, col, content ->
             // 在这里实现具体的点击逻辑（输出日志）
-            Log.d("ChatFragment", "点击表格项: row=$row, col=$col, content=$content")
+            Log.d("DataFragment", "点击表格项: row=$row, col=$col, content=$content")
         }
 
         binding.recyclerViewTable.apply {
