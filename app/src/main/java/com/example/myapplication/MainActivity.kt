@@ -27,17 +27,30 @@ class MainActivity : AppCompatActivity() {
         val viewPager = findViewById<ViewPager2>(R.id.viewPager)
 
         viewPager.adapter = ViewPagerAdapter(this)
+
         viewPager.offscreenPageLimit = 1
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = when (position) {
-                0 -> "聊天"
-                1 -> "发现"
-                else -> "我的"
+            when (position) {
+                0 -> {
+                    tab.text = "聊天"
+                    tab.setIcon(R.drawable.ic_chat)
+                }
+                1 -> {
+                    tab.text = "数据"
+                    tab.setIcon(R.drawable.ic_table)
+                }
+                2 -> {
+                    tab.text = "发现"
+                    tab.setIcon(R.drawable.ic_discover)
+                }
+                else -> {
+                    tab.text = "我的"
+                    tab.setIcon(R.drawable.ic_my)
+                }
             }
         }.attach()
     }
-
     // 2. 标签点击监听（想测试就开，不想测试注释）
     private fun initTabSelectListener() {
         val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
