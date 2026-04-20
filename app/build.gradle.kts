@@ -55,6 +55,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
 
+    implementation("com.google.android.material:material:1.9.0")
     // 布局与 UI 组件 (满足要求 3)
     implementation("com.google.android.material:material:1.11.0") // 包含 TabLayout, Button 等
     implementation("androidx.constraintlayout:constraintlayout:2.1.4") // ConstraintLayout

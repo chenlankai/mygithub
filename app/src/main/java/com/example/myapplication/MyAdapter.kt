@@ -22,6 +22,10 @@ class MyAdapter(private val items: List<ItemData>) : RecyclerView.Adapter<MyAdap
             Log.d("MyAdapter", "Item clicked: ${item.title}")
             // 处理点击事件
         }
+        holder.binding.btnMore.setOnClickListener {
+            Log.d("MyAdapter", "More button clicked: ${item.title}")
+            // 处理更多按钮点击事件
+        }
     }
 
     override fun getItemCount() = items.size
