@@ -3,7 +3,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:elevation="10dp"
+    android:background="@drawable/bg_menu"
+    android:elevation="15dp"
     android:paddingVertical="4dp">
 
     <TextView

@@ -54,7 +54,8 @@ dependencies {
     // 基础 AndroidX 库
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
-
+    // 简化头像加载
+    implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("com.google.android.material:material:1.9.0")
     // 布局与 UI 组件 (满足要求 3)
     implementation("com.google.android.material:material:1.11.0") // 包含 TabLayout, Button 等
@@ -65,4 +66,9 @@ dependencies {
     implementation("com.google.android.exoplayer:exoplayer-core:2.19.1")
     implementation("com.google.android.exoplayer:exoplayer-ui:2.19.1")      // 用于播放控制UI
     implementation("com.google.android.exoplayer:exoplayer-hls:2.19.1")
+    //Lifecycle（生命周期感知）
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-common-java8:2.6.2")
+    //ViewModel（数据持有与存储）
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
 }

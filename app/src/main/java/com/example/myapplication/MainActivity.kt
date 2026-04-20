@@ -4,16 +4,23 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.TableLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.math.log
 class MainActivity : AppCompatActivity() {
+    private lateinit var viewModel: MyViewModel
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        lifecycle.addObserver(MyObserver())
+
+        // 使用 viewModel.count
+        viewModel = ViewModelProvider(this).get(MyViewModel::class.java)
+        Log.d("MainActivity","使用了viewModel")
 
         // 想测试哪块 就留哪块，不想用直接注释掉！
         initTabAndViewPager()
