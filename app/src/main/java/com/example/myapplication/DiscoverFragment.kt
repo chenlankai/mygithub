@@ -8,8 +8,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.databinding.FragmentDiscoverBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
@@ -18,6 +16,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [DiscoverFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+data class ItemData(val title: String, val subtitle: String)
 class DiscoverFragment : Fragment() {
         // TODO: Rename and change types of parameters
         private var param1: String? = null
@@ -72,7 +71,7 @@ class DiscoverFragment : Fragment() {
         // 设置布局管理器（线性布局）
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         // 设置适配器
-        binding.recyclerView.adapter = MyAdapter(dataList)
+        binding.recyclerView.adapter = ListAdapter(dataList)
 
         // 显式开启嵌套滚动，解决在 ViewPager2 中可能出现的滑动冲突
         binding.recyclerView.isNestedScrollingEnabled = true

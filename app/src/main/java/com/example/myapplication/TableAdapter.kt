@@ -20,6 +20,7 @@ class TableAdapter(
         val rowData = data[position]
         val isTitle = position == 0
         holder.bind(rowData, isTitle, position)
+
     }
 
     override fun getItemCount(): Int = data.size

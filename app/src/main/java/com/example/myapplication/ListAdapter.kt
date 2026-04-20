@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.databinding.ItemListBinding
 
-class MyAdapter(private val items: List<ItemData>) : RecyclerView.Adapter<MyAdapter.ViewHolder>() {
+class ListAdapter(private val items: List<ItemData>) : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: ItemListBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -19,11 +19,11 @@ class MyAdapter(private val items: List<ItemData>) : RecyclerView.Adapter<MyAdap
         holder.binding.tvTitle.text = item.title
         holder.binding.tvSubtitle.text = item.subtitle
         holder.itemView.setOnClickListener {
-            Log.d("MyAdapter", "Item clicked: ${item.title}")
+            Log.d("ListAdapter", "Item clicked: ${item.title}")
             // 处理点击事件
         }
         holder.binding.btnMore.setOnClickListener {
-            Log.d("MyAdapter", "More button clicked: ${item.title}")
+            Log.d("ListAdapter", "More button clicked: ${item.title}")
             // 处理更多按钮点击事件
         }
     }
