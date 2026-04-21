@@ -32,31 +32,30 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // 初始化数据库
-        appDatabase = AppDatabase.getInstance(requireActivity().application)
+        //appDatabase = AppDatabase.getInstance(requireActivity().application)
 
-        // ====================== 【核心：初始化所有信息】 ======================
         loadUserData()
 
         // 保存按钮
         binding.btnSave.setOnClickListener {
             saveUserData()
         }
+
     }
 
-    // ====================== 加载用户信息，显示到输入框 ======================
+
     private fun loadUserData() {
         lifecycleScope.launch {
-            val user = appDatabase.userDao().getUser() ?: getDefaultUser()
+            //val user = appDatabase.userDao().getUser() ?: getDefaultUser()
 
             // 给你的所有输入框赋值
-            binding.etUsername.setText(user.username)
-            binding.etPhone.setText(user.phone)
-            binding.etEmail.setText(user.email)
-            binding.etAddress.setText(user.address)
+            //binding.etUsername.setText(user.username)
+            //binding.etPhone.setText(user.phone)
+            //binding.etEmail.setText(user.email)
+            //binding.etAddress.setText(user.address)
         }
     }
 
-    // ====================== 保存用户信息到数据库 ======================
     private fun saveUserData() {
         val username = binding.etUsername.text.toString().trim()
         val phone = binding.etPhone.text.toString().trim()
@@ -71,11 +70,11 @@ class ProfileFragment : Fragment() {
         )
 
         lifecycleScope.launch {
-            appDatabase.userDao().insertUser(user)
+            //appDatabase.userDao().insertUser(user)
         }
     }
 
-    // ====================== 默认用户数据（第一次打开APP时显示） ======================
+
     private fun getDefaultUser(): User {
         return User(
             username = "张三",
