@@ -1,4 +1,6 @@
-package com.example.myapplication
+package com.example.myapplication.ui.adapter
+import com.example.myapplication.R
+import com.example.myapplication.ui.fragment.ItemData
 
 import android.content.res.Resources
 import android.graphics.Color

@@ -1,17 +1,17 @@
 plugins {
-    alias(libs.plugins.android.application)
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("kotlin-kapt")
 }
 
 android {
     namespace = "com.example.myapplication"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 36
+
     buildFeatures {
         viewBinding = true
     }
+
     defaultConfig {
         applicationId = "com.example.myapplication"
         minSdk = 30
@@ -35,50 +35,35 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    kotlinOptions {
+        jvmTarget = "11"
+    }
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.activity)
-    implementation(libs.androidx.constraintlayout)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    // Room 核心
-    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("androidx.activity:activity:1.8.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
+    val roomVersion = "2.6.1"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    kapt("androidx.room:room-compiler:$roomVersion")
 
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.viewpager2:viewpager2:1.1.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
-    // 基础 AndroidX 库
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    // 简化头像加载
     implementation("com.github.bumptech.glide:glide:4.16.0")
-    implementation("com.google.android.material:material:1.9.0")
-    // 布局与 UI 组件 (满足要求 3)
-    implementation("com.google.android.material:material:1.11.0") // 包含 TabLayout, Button 等
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4") // ConstraintLayout
-    implementation("androidx.viewpager2:viewpager2:1.0.0") // ViewPager2
-    implementation("androidx.recyclerview:recyclerview:1.3.2") // RecyclerView
-
     implementation("com.google.android.exoplayer:exoplayer-core:2.19.1")
-    implementation("com.google.android.exoplayer:exoplayer-ui:2.19.1")      // 用于播放控制UI
+    implementation("com.google.android.exoplayer:exoplayer-ui:2.19.1")
     implementation("com.google.android.exoplayer:exoplayer-hls:2.19.1")
-    //Lifecycle（生命周期感知）
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.lifecycle:lifecycle-common-java8:2.6.2")
-
-    //ViewModel（数据持有与存储）
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
-    //LiveData（可观察数据容器）
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
-
-    //协程相关的依赖
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    //
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-
-
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 }

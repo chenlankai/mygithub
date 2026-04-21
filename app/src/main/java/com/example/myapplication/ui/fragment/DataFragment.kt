@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.ui.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.myapplication.R
+import com.example.myapplication.ui.adapter.TableAdapter
 import com.example.myapplication.databinding.FragmentDataBinding
 import androidx.recyclerview.widget.LinearLayoutManager
 

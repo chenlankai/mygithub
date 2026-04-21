@@ -10,6 +10,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
+import com.example.myapplication.ui.viewmodel.MyViewModel
+import com.example.myapplication.ui.adapter.ViewPagerAdapter
+import com.example.myapplication.utils.MyObserver
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
