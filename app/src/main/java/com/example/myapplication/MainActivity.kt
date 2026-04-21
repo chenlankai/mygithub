@@ -3,12 +3,18 @@ package com.example.myapplication
 import android.os.Bundle
 import android.util.Log
 import android.widget.TableLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.log
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MyViewModel
@@ -17,15 +23,37 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         lifecycle.addObserver(MyObserver())
+        lifecycleScope.launch {
+            // 在 Activity 生命周期内有效，销毁时自动取消
+            val data = fetchData()
+        }
 
         // 使用 viewModel.count
-        viewModel = ViewModelProvider(this).get(MyViewModel::class.java)
+        // viewModel = ViewModelProvider(this).get(MyViewModel::class.java)
+        viewModel = ViewModelProvider(this)[MyViewModel::class.java]
         Log.d("MainActivity","使用了viewModel")
+
+        //viewModel.loadData()
+        viewModel.increment()
+
+        //收集flow
+        lifecycleScope.launch{
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.simpleFlow().collect { value ->
+                    //textView.text = value.toString()
+                    Log.d("MainActivity","收集了$value")
+                }
+            }
+        }
 
         // 想测试哪块 就留哪块，不想用直接注释掉！
         initTabAndViewPager()
         initTabSelectListener()
         initViewPagerCallback()
+    }
+    private suspend fun fetchData(): String { // 模拟数据加载
+        delay(1000)
+        return "Result"
     }
 
     // 1. 初始化 TabLayout + ViewPager2 绑定
@@ -60,6 +88,7 @@ class MainActivity : AppCompatActivity() {
     }
     // 2. 标签点击监听（想测试就开，不想测试注释）
     private fun initTabSelectListener() {
+
         val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {

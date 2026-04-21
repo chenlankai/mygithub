@@ -69,6 +69,16 @@ dependencies {
     //Lifecycle（生命周期感知）
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-common-java8:2.6.2")
+
     //ViewModel（数据持有与存储）
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    //LiveData（可观察数据容器）
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
+
+    //协程相关的依赖
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    //
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+
+
 }
