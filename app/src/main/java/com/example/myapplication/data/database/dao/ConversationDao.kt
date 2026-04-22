@@ -19,14 +19,14 @@ interface ConversationDao {
     suspend fun updateConversation(conversation: Conversation)
 
     // 获取所有会话（按时间倒序）
-    @Query("SELECT * FROM Conversation ORDER BY lastMessageTime DESC")
+    @Query("SELECT * FROM Conversation ORDER BY last_message_time DESC")
     fun getAllConversationsFlow(): Flow<List<Conversation>>
 
     // 根据ID获取会话
-    @Query("SELECT * FROM Conversation WHERE conversationId = :convId LIMIT 1")
+    @Query("SELECT * FROM Conversation WHERE id = :convId LIMIT 1")
     suspend fun getConversationById(convId: String): Conversation?
 
     // 清空未读数
-    @Query("UPDATE Conversation SET unreadCount = 0 WHERE conversationId = :convId")
+    @Query("UPDATE Conversation SET unread_count = 0 WHERE  id = :convId")
     suspend fun clearUnreadCount(convId: String)
 }

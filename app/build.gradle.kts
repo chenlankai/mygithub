@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
-    id("com.google.devtools.ksp") version "2.0.20-1.0.25" apply false
+    //id("com.google.devtools.ksp") version "2.0.20-1.0.25" apply false
+    //alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
 
 }
 
@@ -71,10 +73,12 @@ dependencies {
     // OkHttp
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
-    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-runtime:2.8.4")
 
 
     // Kotlin 扩展 & 协程支持（推荐）
-    implementation("androidx.room:room-ktx:2.6.1")
+    implementation("androidx.room:room-ktx:2.8.4")
+
+    ksp("androidx.room:room-compiler:2.8.4")
 
 }

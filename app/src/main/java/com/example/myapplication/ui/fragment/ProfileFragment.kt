@@ -32,7 +32,7 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // 初始化数据库
-        //appDatabase = AppDatabase.getInstance(requireActivity().application)
+        appDatabase = AppDatabase.getInstance(requireActivity().application)
 
         loadUserData()
 

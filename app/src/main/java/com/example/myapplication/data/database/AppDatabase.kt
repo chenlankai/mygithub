@@ -13,7 +13,8 @@ import com.example.myapplication.data.model.User
 
 @Database(
     entities = [User::class, Conversation::class, Message::class],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 
