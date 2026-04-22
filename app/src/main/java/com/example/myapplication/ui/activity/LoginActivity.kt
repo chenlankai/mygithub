@@ -2,6 +2,7 @@ package com.example.myapplication.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -11,6 +12,7 @@ import com.example.myapplication.data.model.User
 import com.example.myapplication.data.model.UserManager
 import com.example.myapplication.databinding.ActivityLoginBinding
 import kotlinx.coroutines.launch
+import kotlin.system.measureTimeMillis
 
 class LoginActivity : AppCompatActivity() {
 
@@ -44,7 +46,6 @@ class LoginActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val db = AppDatabase.getInstance(applicationContext)
             val userDao = db.userDao()
-            
             // 1. 先尝试获取zhangsan
             var user = userDao.getUserByUsername("zhangsan")
             
@@ -56,13 +57,20 @@ class LoginActivity : AppCompatActivity() {
             }
             
             if (user != null) {
+
+
+
                 UserManager.login(user)
+
                 Toast.makeText(this@LoginActivity, "测试模式：已登录zhangsan", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this@LoginActivity, MainActivity::class.java)
                 startActivity(intent)
                 finish()
             } else {
                 Toast.makeText(this@LoginActivity, "无法创建测试用户，请检查数据库", Toast.LENGTH_SHORT).show()
+
+
+
             }
         }
     }
@@ -89,9 +97,13 @@ class LoginActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch {
+            val s_t = System.currentTimeMillis()
+            println(s_t)
             val userDao = AppDatabase.getInstance(applicationContext).userDao()
             val user = userDao.getUserByUsername(username)
-
+            val s_t1 = System.currentTimeMillis()
+            println(s_t1-s_t)
+            Log.d("123","${s_t1-s_t}")
             if (user != null) {
                 // 如果数据库中密码为空，则校验是否为 123456；否则按原密码校验
                 val isPasswordCorrect = if (user.password.isEmpty()) {
