@@ -13,10 +13,10 @@ class MyApplication : Application() {
         super.onCreate()
         Log.d("MyApplication", "MyApplication onCreate 执行 - 这是应用启动的第一个入口")
 
-        // 在这里进行全局初始化
+
         instance = this
 
-        // 异步预加载数据库
+
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 AppDatabase.populateInitialData(applicationContext)

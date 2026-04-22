@@ -35,7 +35,7 @@ class TableAdapter(
 
             if (isTitle) {
                 binding.root.setBackgroundColor(Color.LTGRAY)
-                binding.btnDelete.visibility = android.view.View.INVISIBLE // 标题行不显示删除
+                binding.btnDelete.visibility = android.view.View.INVISIBLE
             } else {
                 binding.root.setBackgroundColor(Color.WHITE)
                 binding.btnDelete.visibility = android.view.View.VISIBLE
