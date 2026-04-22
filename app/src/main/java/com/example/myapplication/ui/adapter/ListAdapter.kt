@@ -1,6 +1,5 @@
 package com.example.myapplication.ui.adapter
 import com.example.myapplication.R
-import com.example.myapplication.ui.fragment.ItemData
 
 import android.content.res.Resources
 import android.graphics.Color
@@ -11,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myapplication.data.model.ItemData
 import com.example.myapplication.databinding.ItemListBinding
 
 class ListAdapter(
