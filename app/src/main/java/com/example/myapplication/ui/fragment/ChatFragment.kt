@@ -1,6 +1,7 @@
 package com.example.myapplication.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,11 +49,36 @@ class ChatFragment : Fragment() {
 
     private fun loadConversations() {
         lifecycleScope.launch {
-            val currentUserId = UserManager.currentUser.id
-            if (currentUserId == 0) return@launch
-            val conversationDao = AppDatabase.getInstance(requireContext()).conversationDao()
-            val conversations = conversationDao.getConversationsWithPeer(currentUserId).first()
-            adapter.submitList(conversations)
+            // 监听用户登录状态的变化
+            UserManager.currentUserFlow.collect { user ->
+                val currentUserId = user.id
+                Log.d("ChatFragment", "UserManager 状态更新，当前 userId: $currentUserId")
+                
+                if (currentUserId != 0) {
+                    // 同步更新 Adapter 中的用户 ID，确保未读数显示逻辑正确
+                    adapter.updateCurrentUserId(currentUserId)
+
+                    Log.d("ChatFragment", "开始从数据库读取发送给 userId 为 $currentUserId 的会话")
+                    val conversationDao = AppDatabase.getInstance(requireContext()).conversationDao()
+                    
+                    // 仅加载接收者为当前用户的会话
+                    conversationDao.getConversationsByReceiverIdFlow(currentUserId).collect { conversations ->
+                        Log.d("ChatFragment", "读取到会话数量: ${conversations.size}")
+                        
+                        // 详细打印每一条会话内容，方便查看
+                        conversations.forEachIndexed { index, item ->
+                            val conv = item.conversation
+                            Log.d("ChatFragment", "查找到的会话[$index]: ID=${conv.id}, " +
+                                    "发送者ID=${conv.senderId}, 接收者ID=${conv.receiverId}, 对方名称=${item.peerName}, 最后消息=${conv.lastMessage}" +
+                                    ", 未查看的消息数量=${conv.unreadCount}")
+                        }
+
+                        adapter.submitList(conversations)
+                    }
+                } else {
+                    Log.w("ChatFragment", "当前未登录 (userId=0)")
+                }
+            }
         }
     }
 

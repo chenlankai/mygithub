@@ -3,15 +3,21 @@ package com.example.myapplication.data.model
 // 文件位置：com.example.myapplication.data.model.UserManager.kt
 
 
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+
 object UserManager {
-    var currentUser: User = User()   // 默认空用户
-        private set
+    private val _currentUser = MutableStateFlow(User())
+    val currentUserFlow: StateFlow<User> = _currentUser.asStateFlow()
+
+    val currentUser: User get() = _currentUser.value
 
     fun login(user: User) {
-        currentUser = user
+        _currentUser.value = user
     }
 
     fun logout() {
-        currentUser = User()
+        _currentUser.value = User()
     }
 }

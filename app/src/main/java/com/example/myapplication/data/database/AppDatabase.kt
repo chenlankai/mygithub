@@ -37,8 +37,22 @@ abstract class AppDatabase : RoomDatabase() {
                 receiverId = 1,        // 张三
                 lastMessage = "在的，你忙吗？",
                 lastMessageTime = System.currentTimeMillis() - 3600000,
-                unreadCount = 2        // 张三无未读
-            )
+                unreadCount = 2        // 张三两条未读
+            ),
+            Conversation(
+                senderId = 3,          // 王五
+                receiverId = 1,        // 张三
+                lastMessage = "你好，在吗？",
+                lastMessageTime = System.currentTimeMillis() - 3600000,
+                unreadCount = 2        //张三两条未读
+            ),
+            Conversation(
+                senderId = 3,          // 王五
+                receiverId = 2,        // 李四
+                lastMessage = "你好，在吗？",
+                lastMessageTime = System.currentTimeMillis() - 3600000,
+                unreadCount = 2        //李四两条未读
+            ),
         )
         private val defaultUsers = listOf(
             User(username = "张三", phone = "19293353407", email = "zhangsan@163.com", address = "河南省郑州市"),
