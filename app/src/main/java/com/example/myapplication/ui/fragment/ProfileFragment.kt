@@ -75,12 +75,15 @@ class ProfileFragment : Fragment() {
     }
 
 
-    private fun getDefaultUser(): User {
-        return User(
-            username = "张三",
-            phone = "13812345678",
-            email = "zhangsan@example.com",
-            address = "北京市朝阳区xxx"
+    private suspend fun getDefaultUser(): User {
+        val db = AppDatabase.getInstance(requireContext())
+        val user = db.userDao().getFirstUser()
+        // 如果数据库为空，返回一个备用的默认用户（可根据需要修改）
+        return user ?: User(
+            username = "默认用户",
+            phone = "00000000000",
+            email = "default@example.com",
+            address = "默认地址"
         )
     }
 

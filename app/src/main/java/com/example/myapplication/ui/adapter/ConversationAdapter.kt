@@ -7,17 +7,18 @@ import com.bumptech.glide.Glide
 import com.example.myapplication.R
 import com.example.myapplication.databinding.ItemConversationBinding
 import com.example.myapplication.data.model.Conversation
+import com.example.myapplication.data.model.ConversationWithPeer
 import java.text.SimpleDateFormat
 import java.util.*
-
 class ConversationAdapter(
+    private val currentUserId: Int,
     private val onItemClick: (Conversation) -> Unit
 ) : RecyclerView.Adapter<ConversationAdapter.ViewHolder>() {
 
-    private var conversations = listOf<Conversation>()
+    private var items = listOf<ConversationWithPeer>()
 
-    fun submitList(list: List<Conversation>) {
-        conversations = list
+    fun submitList(list: List<ConversationWithPeer>) {
+        items = list
         notifyDataSetChanged()
     }
 
@@ -27,30 +28,29 @@ class ConversationAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val conv = conversations[position]
-        holder.bind(conv)
-        holder.itemView.setOnClickListener { onItemClick(conv) }
+        val item = items[position]
+        holder.bind(item)
+        holder.itemView.setOnClickListener { onItemClick(item.conversation) }
     }
 
-    override fun getItemCount() = conversations.size
+    override fun getItemCount() = items.size
 
     inner class ViewHolder(private val binding: ItemConversationBinding) : RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(conv: Conversation) {
-            binding.tvName.text = conv.peerName
+        fun bind(item: ConversationWithPeer) {
+            val conv = item.conversation
+            binding.tvName.text = item.peerName
             binding.tvLastMessage.text = conv.lastMessage
             binding.tvTime.text = formatTime(conv.lastMessageTime)
 
-            if (conv.unreadCount > 0) {
-                binding.tvUnread.visibility = View.VISIBLE
-                val text = if (conv.unreadCount > 99) "99+" else conv.unreadCount.toString()
-                binding.tvUnread.text = text
-            } else {
-                binding.tvUnread.visibility = View.GONE
+            // 未读数：只有当前用户是接收方才显示
+            val unread = if (conv.receiverId == currentUserId) conv.unreadCount else 0
+            binding.tvUnread.visibility = if (unread > 0) View.VISIBLE else View.GONE
+            if (unread > 0) {
+                binding.tvUnread.text = if (unread > 99) "99+" else unread.toString()
             }
 
             Glide.with(binding.ivAvatar.context)
-                .load(conv.peerAvatar)
+                .load(item.peerAvatar)
                 .placeholder(R.drawable.ic_default_avatar)
                 .circleCrop()
                 .into(binding.ivAvatar)

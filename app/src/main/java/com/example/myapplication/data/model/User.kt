@@ -16,16 +16,3 @@ data class User(
     val address: String = "",    // 地址
     val avatar: String = ""     // 头像（本地/网络路径）
 )
-
-object UserManager {
-    // 当前登录的用户
-    var currentUser: User = User(
-        username = "张三",
-        phone = "19293353407",
-        email = "zhangsan@163.com",
-        address = "河南省郑州市"
-    )
-    fun updateUser(user: User) {
-        currentUser = user
-    }
-}

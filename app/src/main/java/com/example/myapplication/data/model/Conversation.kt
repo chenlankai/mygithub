@@ -5,25 +5,21 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+
 @Entity(
-    tableName = "conversation"
+    tableName = "conversation",
+    indices = [Index(value = ["sender_id", "receiver_id"], unique = true)]
 )
 data class Conversation(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     val id: Int = 0,
 
-    @ColumnInfo(name = "conversation_id", defaultValue = "''")
-    val conversationId: String = "",
+    @ColumnInfo(name = "sender_id", defaultValue = "0")
+    val senderId: Int,      // 发送方用户 ID
 
-    @ColumnInfo(name = "peer_id", defaultValue = "''")
-    val peerId: String = "",
-
-    @ColumnInfo(name = "peer_name", defaultValue = "''")
-    val peerName: String = "",
-
-    @ColumnInfo(name = "peer_avatar", defaultValue = "''")
-    val peerAvatar: String = "",
+    @ColumnInfo(name = "receiver_id", defaultValue = "0")
+    val receiverId: Int,    // 接收方用户 ID
 
     @ColumnInfo(name = "last_message", defaultValue = "''")
     val lastMessage: String = "",
@@ -31,6 +27,7 @@ data class Conversation(
     @ColumnInfo(name = "last_message_time")
     val lastMessageTime: Long = 0,
 
+    // 未读数可以针对接收方，或者分别记录双方未读
     @ColumnInfo(name = "unread_count", defaultValue = "0")
-    val unreadCount: Int = 0
+    val unreadCount: Int = 0   // 通常表示接收方的未读消息数
 )

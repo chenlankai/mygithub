@@ -10,20 +10,43 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
+import com.example.myapplication.data.database.AppDatabase
+import com.example.myapplication.data.model.UserManager
 import com.example.myapplication.ui.viewmodel.MyViewModel
 import com.example.myapplication.ui.adapter.ViewPagerAdapter
 import com.example.myapplication.utils.MyObserver
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlin.math.log
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MyViewModel
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // 同步初始化数据库并设置当前用户（仅在启动时阻塞，可接受）
+        runBlocking(Dispatchers.IO) {
+            // 插入默认数据（如果表为空）
+            AppDatabase.populateInitialData(applicationContext)
+            // 获取第一个用户作为登录用户
+            val userDao = AppDatabase.getInstance(applicationContext).userDao()
+            val firstUser = userDao.getFirstUser()  // 需要实现此方法
+            if (firstUser != null) {
+                UserManager.login(firstUser)
+            }
+        }
+
+        // 在 IO 线程中初始化数据，避免阻塞主线程
+        CoroutineScope(Dispatchers.IO).launch {
+            AppDatabase.populateInitialData(applicationContext)
+        }
+
         setContentView(R.layout.activity_main)
         lifecycle.addObserver(MyObserver())
         lifecycleScope.launch {

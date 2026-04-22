@@ -2,31 +2,40 @@ package com.example.myapplication.data.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.myapplication.data.model.Conversation
+import com.example.myapplication.data.model.ConversationWithPeer
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ConversationDao {
+    @Insert(onConflict = OnConflictStrategy.IGNORE)  // 或 REPLACE
+    suspend fun insertConversations(conversations: List<Conversation>)
 
-    // 插入会话
-    @Insert
-    suspend fun insertConversation(conversation: Conversation)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)  // 或 IGNORE，配合业务判断
+    suspend fun insertConversation(conversation: Conversation): Long
 
-    // 更新会话
-    @Update
-    suspend fun updateConversation(conversation: Conversation)
 
-    // 获取所有会话（按时间倒序）
-    @Query("SELECT * FROM Conversation ORDER BY last_message_time DESC")
-    fun getAllConversationsFlow(): Flow<List<Conversation>>
+    // 获取会话总数
+    @Query("SELECT COUNT(*) FROM conversation")
+    suspend fun getConversationCount(): Int
 
-    // 根据ID获取会话
-    @Query("SELECT * FROM Conversation WHERE id = :convId LIMIT 1")
-    suspend fun getConversationById(convId: String): Conversation?
+    @Query("SELECT * FROM conversation")
+    suspend fun getAllConversations(): List<Conversation>
 
-    // 清空未读数
-    @Query("UPDATE Conversation SET unread_count = 0 WHERE  id = :convId")
-    suspend fun clearUnreadCount(convId: String)
+    @Query("""
+        SELECT 
+            c.*, 
+            u.username AS peerName, 
+            u.avatar AS peerAvatar
+        FROM conversation c
+        INNER JOIN user u ON 
+            (c.sender_id = :currentUserId AND c.receiver_id = u.id) OR 
+            (c.receiver_id = :currentUserId AND c.sender_id = u.id)
+        ORDER BY c.last_message_time DESC
+    """)
+    fun getConversationsWithPeer(currentUserId: Int): Flow<List<ConversationWithPeer>>
+
 }
