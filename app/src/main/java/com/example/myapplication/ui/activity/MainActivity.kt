@@ -31,8 +31,6 @@ class MainActivity : AppCompatActivity() {
 
         // 如果未登录且 UserManager 也没有缓存用户，则跳转
         if (UserManager.currentUser.id == 0) {
-            // 这里可以增加逻辑：检查本地 SharedPreferences 或数据库
-            // 但暂时我们直接跳转到 LoginActivity
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
@@ -68,14 +66,6 @@ class MainActivity : AppCompatActivity() {
         initTabAndViewPager()
         initTabSelectListener()
         initViewPagerCallback()
-    }
-
-    // 模拟数据加载（可能抛异常）
-    private suspend fun fetchData(): String {
-        delay(1000)
-        // 可在此模拟网络或数据库异常
-        // if (Random.nextBoolean()) throw IOException("网络错误")
-        return "Result"
     }
 
     // 1. 初始化 TabLayout + ViewPager2 绑定

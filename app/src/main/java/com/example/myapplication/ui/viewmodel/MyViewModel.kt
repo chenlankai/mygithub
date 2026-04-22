@@ -30,7 +30,7 @@ class MyViewModel : ViewModel() {
     //创建Flow数据流
     fun simpleFlow(): Flow<Int> = flow {
         for (i in 1..3) {
-            delay(1000)
+            delay(1)
             emit(i)
         }
     }

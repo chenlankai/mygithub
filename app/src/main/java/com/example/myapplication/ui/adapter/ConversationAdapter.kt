@@ -27,7 +27,8 @@ class ConversationAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemConversationBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemConversationBinding.inflate(LayoutInflater.from(parent.context),
+            parent, false)
         return ViewHolder(binding)
     }
 

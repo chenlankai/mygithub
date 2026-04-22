@@ -27,7 +27,7 @@ data class Conversation(
     @ColumnInfo(name = "last_message_time")
     val lastMessageTime: Long = 0,
 
-    // 未读数可以针对接收方，或者分别记录双方未读
+    // 未读数可以针对接收方
     @ColumnInfo(name = "unread_count", defaultValue = "0")
-    val unreadCount: Int = 0   // 通常表示接收方的未读消息数
+    val unreadCount: Int = 0
 )

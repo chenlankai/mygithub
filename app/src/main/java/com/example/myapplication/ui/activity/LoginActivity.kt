@@ -50,7 +50,7 @@ class LoginActivity : AppCompatActivity() {
             
             // 2. 如果没有zhangsan，说明数据库可能被DestructiveMigration清空了，我们直接造一个
             if (user == null) {
-                val newUser = User(username = "zhangsan", password = "123", phone = "19293353407")
+                val newUser = User(username = "zhangsan", password = "123456", phone = "19293353407")
                 userDao.insertUser(newUser)
                 user = userDao.getUserByUsername("zhangsan")
             }

@@ -15,6 +15,9 @@ import com.example.myapplication.data.model.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 @Database(entities = [User::class,Conversation::class,Message::class], version = 4, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
@@ -26,41 +29,55 @@ abstract class AppDatabase : RoomDatabase() {
         private var INSTANCE: AppDatabase? = null
         private val defaultConversations = listOf(
             Conversation(
-                senderId = 1,          // zhangsan
-                receiverId = 2,        // lisi
+                senderId = 1,
+                receiverId = 2,
                 lastMessage = "Hello, are you there?",
                 lastMessageTime = System.currentTimeMillis() - 3600000,
-                unreadCount = 2        // lisi has 2 unread
+                unreadCount = 2
             ),
             Conversation(
-                senderId = 2,          // lisi
-                receiverId = 1,        // zhangsan
+                senderId = 2,
+                receiverId = 1,
                 lastMessage = "Yes, I am. Are you busy?",
                 lastMessageTime = System.currentTimeMillis() - 3600000,
-                unreadCount = 2        // zhangsan has 2 unread
+                unreadCount = 2
             ),
             Conversation(
-                senderId = 3,          // wangwu
-                receiverId = 1,        // zhangsan
+                senderId = 1,
+                receiverId = 3,
                 lastMessage = "Hi, how are you?",
                 lastMessageTime = System.currentTimeMillis() - 3600000,
-                unreadCount = 2        // zhangsan has 2 unread
+                unreadCount = 2
             ),
             Conversation(
-                senderId = 3,          // wangwu
-                receiverId = 2,        // lisi
+                senderId = 3,
+                receiverId = 1,
+                lastMessage = "Hi, how are you?",
+                lastMessageTime = System.currentTimeMillis() - 3600000,
+                unreadCount = 2
+            ),
+            Conversation(
+                senderId = 3,
+                receiverId = 2,
                 lastMessage = "Good morning!",
                 lastMessageTime = System.currentTimeMillis() - 3600000,
-                unreadCount = 2        // lisi has 2 unread
+                unreadCount = 2
+            ),
+            Conversation(
+                senderId = 2,
+                receiverId = 3,
+                lastMessage = "Good morning!",
+                lastMessageTime = System.currentTimeMillis() - 3600000,
+                unreadCount = 2
             ),
         )
         private val defaultUsers = listOf(
-            User(username = "zhangsan", phone = "19293353407", email = "zhangsan@163.com", address = "Henan, Zhengzhou"),
-            User(username = "lisi", phone = "13812345678", email = "lisi@example.com", address = "Beijing, Chaoyang"),
-            User(username = "wangwu", phone = "13987654321", email = "wangwu@example.com", address = "Shanghai, Pudong")
+            User(username = "zhangsan", phone = "19293353407", email = "zhangsan@163.com", address = "Henan, Zhengzhou",password = "123456"),
+            User(username = "lisi", phone = "13812345678", email = "lisi@example.com", address = "Beijing, Chaoyang",password = "123456"),
+            User(username = "wangwu", phone = "13987654321", email = "wangwu@example.com", address = "Shanghai, Pudong",password = "123456")
         )
 
-        // AppDatabase.kt
+
         fun getInstance(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -68,14 +85,14 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "app_database.db"
                 )
-                    .fallbackToDestructiveMigration()   // 必须添加这一行
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 instance
             }
         }
 
-        // 调用此方法初始化数据（在 Application 或首次使用时调用一次）
+        // 调用此方法初始化数据（在 Application 或首次使用时调用一次）同时打印数据库中的信息
         suspend fun populateInitialData(context: Context) {
             Log.d("DatabaseInit", "populateInitialData 开始执行")
             val db = getInstance(context)
@@ -107,13 +124,26 @@ abstract class AppDatabase : RoomDatabase() {
             Log.d("DatabaseInit", "插入完成")
 
             val allConversations = conversationDao.getAllConversations()
+            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
             Log.d("DatabaseInit", "========== 当前所有会话信息 ==========")
             allConversations.forEach { conversation ->
+                val timeString = sdf.format(Date(conversation.lastMessageTime))
                 Log.d("DatabaseInit", "ID: ${conversation.id}, 发送方: ${conversation.senderId}, 接收方: ${conversation.receiverId}," +
                         " 最后一条消息: ${conversation.lastMessage}" +
+                        ", 时间: $timeString" +
                         ", 未查看消息数量：${conversation.unreadCount}")
             }
             Log.d("DatabaseInit", "=====================================")
+
+            val allMessages = db.messageDao().getAllMessages()
+            Log.d("DatabaseInit", "========== 当前所有消息信息 ==========")
+            allMessages.forEach { message ->
+                val timeString = sdf.format(Date(message.timestamp))
+                Log.d("DatabaseInit", "ID: ${message.id}, 会话ID: ${message.conversationId}, " +
+                        "发送方: ${message.senderId}, 内容: ${message.content}, 时间: $timeString")
+            }
+            Log.d("DatabaseInit", "=====================================")
+
         }
     }
 }

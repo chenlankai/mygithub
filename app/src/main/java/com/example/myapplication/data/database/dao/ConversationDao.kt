@@ -14,7 +14,7 @@ interface ConversationDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)  // 或 REPLACE
     suspend fun insertConversations(conversations: List<Conversation>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)  // 或 IGNORE，配合业务判断
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertConversation(conversation: Conversation): Long
 
 

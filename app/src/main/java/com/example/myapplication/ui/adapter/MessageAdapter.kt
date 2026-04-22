@@ -62,7 +62,11 @@ class MessageAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun bind(message: Message) {
             binding.tvContent.text = message.content
             binding.tvTime.text = formatTime(message.timestamp)
-            Glide.with(binding.ivAvatar).load(UserManager.currentUser.avatar).circleCrop().placeholder(R.drawable.ic_default_avatar).into(binding.ivAvatar)
+            Glide.with(binding.ivAvatar.context)
+                .load(UserManager.currentUser.avatar)
+                .circleCrop()
+                .placeholder(R.drawable.ic_default_avatar)
+                .into(binding.ivAvatar)
         }
     }
 
@@ -70,7 +74,11 @@ class MessageAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun bind(message: Message, avatar: String) {
             binding.tvContent.text = message.content
             binding.tvTime.text = formatTime(message.timestamp)
-            Glide.with(binding.ivAvatar).load(avatar).circleCrop().placeholder(R.drawable.ic_default_avatar).into(binding.ivAvatar)
+            Glide.with(binding.ivAvatar.context)
+                .load(avatar)
+                .circleCrop()
+                .placeholder(R.drawable.ic_default_avatar)
+                .into(binding.ivAvatar)
         }
     }
 }
