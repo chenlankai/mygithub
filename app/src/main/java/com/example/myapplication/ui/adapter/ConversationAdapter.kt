@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 class ConversationAdapter(
     private var currentUserId: Int,
-    private val onItemClick: (Conversation) -> Unit
+    private val onItemClick: (ConversationWithPeer) -> Unit
 ) : RecyclerView.Adapter<ConversationAdapter.ViewHolder>() {
 
     private var items = listOf<ConversationWithPeer>()
@@ -34,7 +34,7 @@ class ConversationAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
         holder.bind(item)
-        holder.itemView.setOnClickListener { onItemClick(item.conversation) }
+        holder.itemView.setOnClickListener { onItemClick(item) }
     }
 
     override fun getItemCount() = items.size

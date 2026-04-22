@@ -33,6 +33,9 @@ interface UserDao {
     @Query("SELECT COUNT(*) FROM user")
     suspend fun getUserCount(): Int
 
+    @Query("SELECT * FROM user WHERE username = :username LIMIT 1")
+    suspend fun getUserByUsername(username: String): User?
+
     @Query("SELECT * FROM user ORDER BY id ASC LIMIT 1")
     suspend fun getFirstUser(): User?
 

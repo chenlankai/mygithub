@@ -46,7 +46,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="请输入用户名"
-            android:text="张三"
+            android:text="zhangsan"
             android:inputType="text"
             android:layout_marginStart="16dp"
             app:layout_constraintStart_toEndOf="@id/labelUsername"

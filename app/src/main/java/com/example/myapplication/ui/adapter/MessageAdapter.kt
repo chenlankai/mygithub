@@ -1,73 +1,81 @@
 package com.example.myapplication.ui.adapter
 
-// 放在 adapter 包下，例如 com.example.myapplication.ui.adapter.MessageAdapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.myapplication.R
-import com.example.myapplication.databinding.ItemMessageMineBinding
-import com.example.myapplication.databinding.ItemMessageOtherBinding
 import com.example.myapplication.data.model.Message
+import com.example.myapplication.data.model.UserManager
+import com.example.myapplication.databinding.ItemMessageLeftBinding
+import com.example.myapplication.databinding.ItemMessageRightBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MessageAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    private var messages: List<Message> = emptyList()
+    private var otherAvatar: String = ""
+
     companion object {
-        private const val TYPE_MINE = 0
-        private const val TYPE_OTHER = 1
+        private const val VIEW_TYPE_SENT = 1
+        private const val VIEW_TYPE_RECEIVED = 2
     }
 
-    private var messages = listOf<Message>()
-
-    fun submitList(list: List<Message>) {
-        messages = list
+    fun setMessages(newMessages: List<Message>, otherAvatarPath: String) {
+        this.messages = newMessages
+        this.otherAvatar = otherAvatarPath
         notifyDataSetChanged()
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (messages[position].isMine) TYPE_MINE else TYPE_OTHER
+        val message = messages[position]
+        return if (message.senderId == UserManager.currentUser.id.toString()) {
+            VIEW_TYPE_SENT
+        } else {
+            VIEW_TYPE_RECEIVED
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
-            TYPE_MINE -> {
-                val binding = ItemMessageMineBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                MineViewHolder(binding)
-            }
-            else -> {
-                val binding = ItemMessageOtherBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                OtherViewHolder(binding)
-            }
+        return if (viewType == VIEW_TYPE_SENT) {
+            val binding = ItemMessageRightBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            SentViewHolder(binding)
+        } else {
+            val binding = ItemMessageLeftBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ReceivedViewHolder(binding)
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val message = messages[position]
-        when (holder) {
-            is MineViewHolder -> holder.bind(message)
-            is OtherViewHolder -> holder.bind(message)
+        if (holder is SentViewHolder) {
+            holder.bind(message)
+        } else if (holder is ReceivedViewHolder) {
+            holder.bind(message, otherAvatar)
         }
     }
 
-    override fun getItemCount() = messages.size
+    override fun getItemCount(): Int = messages.size
 
-    inner class MineViewHolder(private val binding: ItemMessageMineBinding) : RecyclerView.ViewHolder(binding.root) {
+    class SentViewHolder(private val binding: ItemMessageRightBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(message: Message) {
             binding.tvContent.text = message.content
             binding.tvTime.text = formatTime(message.timestamp)
+            Glide.with(binding.ivAvatar).load(UserManager.currentUser.avatar).circleCrop().placeholder(R.drawable.ic_default_avatar).into(binding.ivAvatar)
         }
     }
 
-    inner class OtherViewHolder(private val binding: ItemMessageOtherBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(message: Message) {
+    class ReceivedViewHolder(private val binding: ItemMessageLeftBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(message: Message, avatar: String) {
             binding.tvContent.text = message.content
             binding.tvTime.text = formatTime(message.timestamp)
+            Glide.with(binding.ivAvatar).load(avatar).circleCrop().placeholder(R.drawable.ic_default_avatar).into(binding.ivAvatar)
         }
     }
+}
 
-    private fun formatTime(timestamp: Long): String {
-        val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
-        return sdf.format(Date(timestamp))
-    }
+private fun formatTime(timestamp: Long): String {
+    val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
+    return sdf.format(Date(timestamp))
 }

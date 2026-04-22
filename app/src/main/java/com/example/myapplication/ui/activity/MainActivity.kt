@@ -1,5 +1,6 @@
-package com.example.myapplication
+package com.example.myapplication.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -8,18 +9,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
+import com.example.myapplication.R
 import com.example.myapplication.data.database.AppDatabase
 import com.example.myapplication.data.model.UserManager
+import com.example.myapplication.databinding.ActivityMainBinding
 import com.example.myapplication.ui.adapter.ViewPagerAdapter
 import com.example.myapplication.ui.viewmodel.MyViewModel
 import com.example.myapplication.utils.MyObserver
-import com.example.myapplication.databinding.ActivityMainBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MyViewModel
@@ -28,45 +29,24 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // 如果未登录且 UserManager 也没有缓存用户，则跳转
+        if (UserManager.currentUser.id == 0) {
+            // 这里可以增加逻辑：检查本地 SharedPreferences 或数据库
+            // 但暂时我们直接跳转到 LoginActivity
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+            return
+        }
+
         // 使用 ViewBinding
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 异步初始化数据库（只执行一次，不阻塞主线程）
-        lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                // 插入默认数据（内部应做好幂等性检查，如检查表是否为空）
-                AppDatabase.populateInitialData(applicationContext)
-
-                // 获取第一个用户作为登录用户
-                val userDao = AppDatabase.getInstance(applicationContext).userDao()
-                val firstUser = userDao.getFirstUser()
-                withContext(Dispatchers.Main) {
-                    if (firstUser != null) {
-                        UserManager.login(firstUser)
-                        Log.d("MainActivity", "用户登录成功: ${firstUser.username}")
-                    } else {
-                        // 处理无用户场景：可创建默认用户或跳转登录页
-                        Log.w("MainActivity", "数据库中没有用户，请检查初始化逻辑")
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e("MainActivity", "数据库初始化失败", e)
-            }
-        }
-
         // 添加生命周期观察者
         lifecycle.addObserver(MyObserver())
 
-        // 示例：在协程中模拟数据加载（带异常处理）
-        lifecycleScope.launch {
-            try {
-                val data = fetchData()
-                Log.d("MainActivity", "获取数据成功: $data")
-            } catch (e: Exception) {
-                Log.e("MainActivity", "获取数据失败", e)
-            }
-        }
+
 
         // 初始化 ViewModel
         viewModel = ViewModelProvider(this)[MyViewModel::class.java]
@@ -112,14 +92,17 @@ class MainActivity : AppCompatActivity() {
                     tab.text = "聊天"
                     tab.setIcon(R.drawable.ic_chat)
                 }
+
                 1 -> {
                     tab.text = "数据"
                     tab.setIcon(R.drawable.ic_table)
                 }
+
                 2 -> {
                     tab.text = "发现"
                     tab.setIcon(R.drawable.ic_discover)
                 }
+
                 else -> {
                     tab.text = "我的"
                     tab.setIcon(R.drawable.ic_my)

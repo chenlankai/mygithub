@@ -20,23 +20,15 @@ class DataFragment : Fragment() {
 
     // 将数据改为可变的 MutableList，以便执行删除操作
     private val tableData = mutableListOf(
-        listOf("姓名", "年龄", "城市"),   // 标题行
-        listOf("张三", "25", "北京"),
-        listOf("李四", "30", "上海"),
-        listOf("王五", "28", "广州"),
-        listOf("赵六", "22", "深圳"),
-        listOf("张三", "25", "北京"),
-        listOf("李四", "30", "上海"),
-        listOf("王五", "28", "广州"),
-        listOf("赵六", "22", "深圳"),
-        listOf("张三", "25", "北京"),
-        listOf("李四", "30", "上海"),
-        listOf("王五", "28", "广州"),
-        listOf("赵六", "22", "深圳"),
-        listOf("张三", "25", "北京"),
-        listOf("李四", "30", "上海"),
-        listOf("王五", "28", "广州"),
-        listOf("赵六", "22", "深圳"),
+        listOf("Name", "Age", "City"),   // Header
+        listOf("zhangsan", "25", "Beijing"),
+        listOf("lisi", "30", "Shanghai"),
+        listOf("wangwu", "28", "Guangzhou"),
+        listOf("zhaoliu", "22", "Shenzhen"),
+        listOf("zhangsan", "25", "Beijing"),
+        listOf("lisi", "30", "Shanghai"),
+        listOf("wangwu", "28", "Guangzhou"),
+        listOf("zhaoliu", "22", "Shenzhen"),
     )
 
 

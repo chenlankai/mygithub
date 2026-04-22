@@ -14,10 +14,10 @@ interface MessageDao {
     suspend fun insertMessage(message: Message): Long
 
     // 根据会话ID获取所有消息（按时间升序）
-    @Query("SELECT * FROM Message WHERE id = :convId ORDER BY timestamp ASC")
-    fun getMessagesByConversationId(convId: String): Flow<List<Message>>
+    @Query("SELECT * FROM Message WHERE conversation_id = :convId ORDER BY timestamp ASC")
+    fun getMessagesByConversationId(convId: Int): Flow<List<Message>>
 
     // 获取某个会话最后一条消息（用于会话列表显示）
-    @Query("SELECT * FROM Message WHERE id = :convId ORDER BY timestamp DESC LIMIT 1")
-    suspend fun getLastMessage(convId: String): Message?
+    @Query("SELECT * FROM Message WHERE conversation_id = :convId ORDER BY timestamp DESC LIMIT 1")
+    suspend fun getLastMessage(convId: Int): Message?
 }

@@ -39,9 +39,16 @@ class ChatFragment : Fragment() {
     private fun setupRecyclerView() {
         // 从 UserManager 获取当前用户 ID
         val currentUserId = UserManager.currentUser.id
-        adapter = ConversationAdapter(currentUserId) { conversation ->
-            // 点击进入聊天详情页
-            // TODO: 跳转
+        adapter = ConversationAdapter(currentUserId) { conversationWithPeer ->
+            val conversation = conversationWithPeer.conversation
+            // 确定对方的 ID（如果我是发送者，对方就是接收者；反之亦然）
+            val otherUserId = if (conversation.senderId == currentUserId) conversation.receiverId else conversation.senderId
+            
+            val intent = android.content.Intent(requireContext(), com.example.myapplication.ui.activity.ChatDetailActivity::class.java).apply {
+                putExtra("otherUserId", otherUserId)
+                putExtra("conversationId", conversation.id)
+            }
+            startActivity(intent)
         }
         binding.rvConversations.layoutManager = LinearLayoutManager(requireContext())
         binding.rvConversations.adapter = adapter

@@ -15,7 +15,7 @@ import com.example.myapplication.data.model.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-@Database(entities = [User::class,Conversation::class,Message::class], version = 2, exportSchema = false)
+@Database(entities = [User::class,Conversation::class,Message::class], version = 4, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun conversationDao(): ConversationDao
@@ -26,38 +26,38 @@ abstract class AppDatabase : RoomDatabase() {
         private var INSTANCE: AppDatabase? = null
         private val defaultConversations = listOf(
             Conversation(
-                senderId = 1,          // 张三
-                receiverId = 2,        // 李四
-                lastMessage = "你好，在吗？",
+                senderId = 1,          // zhangsan
+                receiverId = 2,        // lisi
+                lastMessage = "Hello, are you there?",
                 lastMessageTime = System.currentTimeMillis() - 3600000,
-                unreadCount = 2        // 李四有2条未读
+                unreadCount = 2        // lisi has 2 unread
             ),
             Conversation(
-                senderId = 2,          // 李四
-                receiverId = 1,        // 张三
-                lastMessage = "在的，你忙吗？",
+                senderId = 2,          // lisi
+                receiverId = 1,        // zhangsan
+                lastMessage = "Yes, I am. Are you busy?",
                 lastMessageTime = System.currentTimeMillis() - 3600000,
-                unreadCount = 2        // 张三两条未读
+                unreadCount = 2        // zhangsan has 2 unread
             ),
             Conversation(
-                senderId = 3,          // 王五
-                receiverId = 1,        // 张三
-                lastMessage = "你好，在吗？",
+                senderId = 3,          // wangwu
+                receiverId = 1,        // zhangsan
+                lastMessage = "Hi, how are you?",
                 lastMessageTime = System.currentTimeMillis() - 3600000,
-                unreadCount = 2        //张三两条未读
+                unreadCount = 2        // zhangsan has 2 unread
             ),
             Conversation(
-                senderId = 3,          // 王五
-                receiverId = 2,        // 李四
-                lastMessage = "你好，在吗？",
+                senderId = 3,          // wangwu
+                receiverId = 2,        // lisi
+                lastMessage = "Good morning!",
                 lastMessageTime = System.currentTimeMillis() - 3600000,
-                unreadCount = 2        //李四两条未读
+                unreadCount = 2        // lisi has 2 unread
             ),
         )
         private val defaultUsers = listOf(
-            User(username = "张三", phone = "19293353407", email = "zhangsan@163.com", address = "河南省郑州市"),
-            User(username = "李四", phone = "13812345678", email = "lisi@example.com", address = "北京市朝阳区"),
-            User(username = "王五", phone = "13987654321", email = "wangwu@example.com", address = "上海市浦东新区")
+            User(username = "zhangsan", phone = "19293353407", email = "zhangsan@163.com", address = "Henan, Zhengzhou"),
+            User(username = "lisi", phone = "13812345678", email = "lisi@example.com", address = "Beijing, Chaoyang"),
+            User(username = "wangwu", phone = "13987654321", email = "wangwu@example.com", address = "Shanghai, Pudong")
         )
 
         // AppDatabase.kt
@@ -110,7 +110,8 @@ abstract class AppDatabase : RoomDatabase() {
             Log.d("DatabaseInit", "========== 当前所有会话信息 ==========")
             allConversations.forEach { conversation ->
                 Log.d("DatabaseInit", "ID: ${conversation.id}, 发送方: ${conversation.senderId}, 接收方: ${conversation.receiverId}," +
-                        " 最后一条消息: ${conversation.lastMessage}")
+                        " 最后一条消息: ${conversation.lastMessage}" +
+                        ", 未查看消息数量：${conversation.unreadCount}")
             }
             Log.d("DatabaseInit", "=====================================")
         }
