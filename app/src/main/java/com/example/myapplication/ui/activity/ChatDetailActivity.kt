@@ -77,7 +77,7 @@ class ChatDetailActivity : AppCompatActivity() {
                 .collect { messages ->
                     val otherUser = AppDatabase.getInstance(applicationContext).userDao().getUserById(otherUserId)
                     adapter.setMessages(messages, otherUser?.avatar ?: "")
-                    // 自动滚动到最新消息
+
                     if (messages.isNotEmpty()) {
                         binding.rvMessages.scrollToPosition(messages.size - 1)
                     }
