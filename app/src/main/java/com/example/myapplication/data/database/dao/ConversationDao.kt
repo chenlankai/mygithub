@@ -31,11 +31,11 @@ interface ConversationDao {
             u.username AS peerName, 
             u.avatar AS peerAvatar
         FROM conversation c
-        INNER JOIN user u ON 
-            (c.sender_id = :currentUserId AND c.receiver_id = u.id) OR 
-            (c.receiver_id = :currentUserId AND c.sender_id = u.id)
+        INNER JOIN user u ON c.sender_id = u.id
+        WHERE c.receiver_id = :currentUserId
         ORDER BY c.last_message_time DESC
     """)
-    fun getConversationsWithPeer(currentUserId: Int): Flow<List<ConversationWithPeer>>
+    fun getConversationsByReceiverIdFlow(currentUserId: Int): Flow<List<ConversationWithPeer>>
+
 
 }

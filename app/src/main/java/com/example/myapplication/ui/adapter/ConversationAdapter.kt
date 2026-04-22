@@ -11,15 +11,19 @@ import com.example.myapplication.data.model.ConversationWithPeer
 import java.text.SimpleDateFormat
 import java.util.*
 class ConversationAdapter(
-    private val currentUserId: Int,
+    private var currentUserId: Int,
     private val onItemClick: (Conversation) -> Unit
 ) : RecyclerView.Adapter<ConversationAdapter.ViewHolder>() {
 
     private var items = listOf<ConversationWithPeer>()
 
+    fun updateCurrentUserId(userId: Int) {
+        currentUserId = userId
+    }
+
     fun submitList(list: List<ConversationWithPeer>) {
         items = list
-        notifyDataSetChanged()
+        notifyDataSetChanged() // 刷新列表
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

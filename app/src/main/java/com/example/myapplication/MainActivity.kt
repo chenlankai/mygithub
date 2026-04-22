@@ -2,8 +2,6 @@ package com.example.myapplication
 
 import android.os.Bundle
 import android.util.Log
-import android.widget.TableLayout
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -12,83 +10,100 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.example.myapplication.data.database.AppDatabase
 import com.example.myapplication.data.model.UserManager
-import com.example.myapplication.ui.viewmodel.MyViewModel
 import com.example.myapplication.ui.adapter.ViewPagerAdapter
+import com.example.myapplication.ui.viewmodel.MyViewModel
 import com.example.myapplication.utils.MyObserver
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlin.math.log
+import kotlinx.coroutines.withContext
+
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MyViewModel
     private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 同步初始化数据库并设置当前用户（仅在启动时阻塞，可接受）
-        runBlocking(Dispatchers.IO) {
-            // 插入默认数据（如果表为空）
-            AppDatabase.populateInitialData(applicationContext)
-            // 获取第一个用户作为登录用户
-            val userDao = AppDatabase.getInstance(applicationContext).userDao()
-            val firstUser = userDao.getFirstUser()  // 需要实现此方法
-            if (firstUser != null) {
-                UserManager.login(firstUser)
+        // 使用 ViewBinding
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        // 异步初始化数据库（只执行一次，不阻塞主线程）
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                // 插入默认数据（内部应做好幂等性检查，如检查表是否为空）
+                AppDatabase.populateInitialData(applicationContext)
+
+                // 获取第一个用户作为登录用户
+                val userDao = AppDatabase.getInstance(applicationContext).userDao()
+                val firstUser = userDao.getFirstUser()
+                withContext(Dispatchers.Main) {
+                    if (firstUser != null) {
+                        UserManager.login(firstUser)
+                        Log.d("MainActivity", "用户登录成功: ${firstUser.username}")
+                    } else {
+                        // 处理无用户场景：可创建默认用户或跳转登录页
+                        Log.w("MainActivity", "数据库中没有用户，请检查初始化逻辑")
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("MainActivity", "数据库初始化失败", e)
             }
         }
 
-        // 在 IO 线程中初始化数据，避免阻塞主线程
-        CoroutineScope(Dispatchers.IO).launch {
-            AppDatabase.populateInitialData(applicationContext)
-        }
-
-        setContentView(R.layout.activity_main)
+        // 添加生命周期观察者
         lifecycle.addObserver(MyObserver())
+
+        // 示例：在协程中模拟数据加载（带异常处理）
         lifecycleScope.launch {
-            // 在 Activity 生命周期内有效，销毁时自动取消
-            val data = fetchData()
+            try {
+                val data = fetchData()
+                Log.d("MainActivity", "获取数据成功: $data")
+            } catch (e: Exception) {
+                Log.e("MainActivity", "获取数据失败", e)
+            }
         }
 
-        // 使用 viewModel.count
-        // viewModel = ViewModelProvider(this).get(MyViewModel::class.java)
+        // 初始化 ViewModel
         viewModel = ViewModelProvider(this)[MyViewModel::class.java]
-        Log.d("MainActivity","使用了viewModel")
+        Log.d("MainActivity", "使用了 ViewModel")
 
-        //viewModel.loadData()
+        // 触发 ViewModel 中的操作（示例）
         viewModel.increment()
 
-        //收集flow
-        lifecycleScope.launch{
-            repeatOnLifecycle(Lifecycle.State.STARTED){
+        // 收集 Flow（生命周期感知）
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.simpleFlow().collect { value ->
-                    //textView.text = value.toString()
-                    Log.d("MainActivity","收集了$value")
+                    Log.d("MainActivity", "收集到 Flow 值: $value")
                 }
             }
         }
 
-        // 想测试哪块 就留哪块，不想用直接注释掉！
+        // 初始化 TabLayout 和 ViewPager2
         initTabAndViewPager()
         initTabSelectListener()
         initViewPagerCallback()
     }
-    private suspend fun fetchData(): String { // 模拟数据加载
+
+    // 模拟数据加载（可能抛异常）
+    private suspend fun fetchData(): String {
         delay(1000)
+        // 可在此模拟网络或数据库异常
+        // if (Random.nextBoolean()) throw IOException("网络错误")
         return "Result"
     }
 
     // 1. 初始化 TabLayout + ViewPager2 绑定
     private fun initTabAndViewPager() {
-        val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
-        val viewPager = findViewById<ViewPager2>(R.id.viewPager)
+        val tabLayout = binding.tabLayout
+        val viewPager = binding.viewPager
 
         viewPager.adapter = ViewPagerAdapter(this)
-
         viewPager.offscreenPageLimit = 1
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
@@ -112,45 +127,47 @@ class MainActivity : AppCompatActivity() {
             }
         }.attach()
     }
-    // 2. 标签点击监听（想测试就开，不想测试注释）
-    private fun initTabSelectListener() {
 
-        val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
+    // 2. Tab 选中监听
+    private fun initTabSelectListener() {
+        val tabLayout = binding.tabLayout
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                Log.d("MainActivity", "选中了${tab?.text}")
+                Log.d("MainActivity", "选中了 ${tab?.text}")
             }
+
             override fun onTabReselected(tab: TabLayout.Tab?) {
-                Log.d("MainActivity", "再次选中了${tab?.text}")
+                Log.d("MainActivity", "再次选中了 ${tab?.text}")
             }
+
             override fun onTabUnselected(tab: TabLayout.Tab?) {
-                Log.d("MainActivity", "取消选中了${tab?.text}")
+                Log.d("MainActivity", "取消选中了 ${tab?.text}")
             }
         })
     }
 
-    // 3. 页面滑动监听（想测试就开）
+    // 3. ViewPager2 滑动监听
     private fun initViewPagerCallback() {
-        val viewPager = findViewById<ViewPager2>(R.id.viewPager)
+        val viewPager = binding.viewPager
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                Log.d("MainActivity", "选中了$position")
+                Log.d("MainActivity", "选中页面位置: $position")
             }
+
             override fun onPageScrollStateChanged(state: Int) {
                 super.onPageScrollStateChanged(state)
-                Log.d("MainActivity", "状态改变了$state")
+                Log.d("MainActivity", "滑动状态改变: $state")
             }
+
             override fun onPageScrolled(
                 position: Int,
                 positionOffset: Float,
                 positionOffsetPixels: Int
             ) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels)
-                Log.d("MainActivity", "滑动中 position:$position")
+                Log.d("MainActivity", "滑动中 position: $position")
             }
         })
     }
-
-
 }
