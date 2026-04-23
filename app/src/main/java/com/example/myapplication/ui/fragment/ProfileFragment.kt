@@ -95,7 +95,7 @@ class ProfileFragment : Fragment() {
             // 获取更新后的用户数据并更新 UserManager
             val updatedUser = userDao.getUserById(currentUserId)
             if (updatedUser != null) {
-                com.example.myapplication.data.model.UserManager.login(updatedUser)
+                com.example.myapplication.data.model.UserManager.login(requireContext(), updatedUser)
                 android.widget.Toast.makeText(requireContext(), "保存成功", android.widget.Toast.LENGTH_SHORT).show()
             }
         }

@@ -23,46 +23,17 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var viewModel: MyViewModel
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 如果未登录且 UserManager 也没有缓存用户，则跳转
-        if (UserManager.currentUser.id == 0) {
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-            finish()
-            return
-        }
-
-        // 使用 ViewBinding
+        // 1. 立即初始化 ViewBinding
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        Log.d("MainActivity","onCreate")
 
-        // 添加生命周期观察者
-        lifecycle.addObserver(MyObserver())
-
-
-
-        // 初始化 ViewModel
-        viewModel = ViewModelProvider(this)[MyViewModel::class.java]
-        Log.d("MainActivity", "使用了 ViewModel")
-
-        // 触发 ViewModel 中的操作（示例）
-        viewModel.increment()
-
-        // 收集 Flow（生命周期感知）
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.simpleFlow().collect { value ->
-                    Log.d("MainActivity", "收集到 Flow 值: $value")
-                }
-            }
-        }
-
-        // 初始化 TabLayout 和 ViewPager2
+        // 2. 因为 SplashActivity 已经处理了登录校验，这里直接初始化 UI
         initTabAndViewPager()
         initTabSelectListener()
         initViewPagerCallback()

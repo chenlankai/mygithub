@@ -55,12 +55,9 @@ class LoginActivity : AppCompatActivity() {
                 userDao.insertUser(newUser)
                 user = userDao.getUserByUsername("zhangsan")
             }
-            
             if (user != null) {
 
-
-
-                UserManager.login(user)
+                UserManager.login(applicationContext, user)
 
                 Toast.makeText(this@LoginActivity, "测试模式：已登录zhangsan", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this@LoginActivity, MainActivity::class.java)
@@ -68,8 +65,6 @@ class LoginActivity : AppCompatActivity() {
                 finish()
             } else {
                 Toast.makeText(this@LoginActivity, "无法创建测试用户，请检查数据库", Toast.LENGTH_SHORT).show()
-
-
 
             }
         }
@@ -97,13 +92,8 @@ class LoginActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch {
-            val s_t = System.currentTimeMillis()
-            println(s_t)
             val userDao = AppDatabase.getInstance(applicationContext).userDao()
             val user = userDao.getUserByUsername(username)
-            val s_t1 = System.currentTimeMillis()
-            println(s_t1-s_t)
-            Log.d("123","${s_t1-s_t}")
             if (user != null) {
                 // 如果数据库中密码为空，则校验是否为 123456；否则按原密码校验
                 val isPasswordCorrect = if (user.password.isEmpty()) {
@@ -111,9 +101,8 @@ class LoginActivity : AppCompatActivity() {
                 } else {
                     user.password == password
                 }
-
                 if (isPasswordCorrect) {
-                    UserManager.login(user)
+                    UserManager.login(applicationContext, user)
                     startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                     finish()
                 } else {
