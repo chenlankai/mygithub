@@ -16,7 +16,7 @@ object UserManager {
     private const val PREF_NAME = "user_prefs"
     private const val KEY_USER_ID = "logged_user_id"
     private const val KEY_EXPIRE_TIME = "login_expire_time"
-    private const val EXPIRE_DURATION =2 * 60 * 60 * 1000L
+    private const val EXPIRE_DURATION = 2 * 60 * 60 * 1000L
 
 
     fun login(context: android.content.Context, user: User) {

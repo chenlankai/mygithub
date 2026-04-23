@@ -30,6 +30,11 @@
         <activity
             android:name=".ui.activity.MainActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".ui.activity.ChatDetailActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>
