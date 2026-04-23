@@ -7,6 +7,4 @@ import com.example.myapplication.data.model.User
 import kotlinx.coroutines.flow.Flow
 
 class UserRepository(context: Context) {
-
-
 }

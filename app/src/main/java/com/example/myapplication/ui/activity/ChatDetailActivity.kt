@@ -113,15 +113,25 @@ class ChatDetailActivity : AppCompatActivity() {
             convDao.updateLastMessageById(peerConv.id, content, now)
             convDao.incrementUnreadCount(peerConv.id)
 
-            // 3. 插入消息 (关联到当前会话)
-            val newMessage = Message(
+            // 3. 插入消息 (关联到当前的会话)
+            val newMessage1 = Message(
                 conversationId = myConv.id.toString(),
                 senderId = myId.toString(),
                 receiverId = otherUserId.toString(),
                 content = content,
                 timestamp = now
             )
-            db.messageDao().insertMessage(newMessage)
+            db.messageDao().insertMessage(newMessage1)
+            // 4. 插入消息 (关联到对方的会话)
+            val newMessage2 = Message(
+                conversationId = peerConv.id.toString(),
+                senderId = myId.toString(),
+                receiverId = otherUserId.toString(),
+                content = content,
+                timestamp = now
+            )
+            db.messageDao().insertMessage(newMessage2)
+
 
             withContext(Dispatchers.Main) {
                 binding.etMessage.text.clear()
